@@ -7,6 +7,10 @@ from selenium.webdriver.chrome.options import Options
 from bot.booking.booking_filtration import BookingFiltration
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from prettytable import PrettyTable
+
+from bot.booking.booking_report import BookingReport
+
 
 class Booking(webdriver.Chrome):
 
@@ -15,11 +19,14 @@ class Booking(webdriver.Chrome):
         self.teardown = teardown
         os.environ['PATH'] += os.pathsep + driver_path
         options = Options()
-        options.add_experimental_option("detach", True)
+        # options.add_experimental_option("detach", True)
+        # options.add_argument('--headless')  # <-- Headless mode
+        # options.add_argument('--disable-gpu')  # <-- Optional, for Windows
+        # options.add_argument('--window-size=1920,1080')  # Recommended for full-page rendering
+        # options.add_argument('--no-sandbox')  # Optional, helps in some environments
         super(Booking, self).__init__(options=options)
-        self.implicitly_wait(15)
+        self.implicitly_wait(1)
         self.maximize_window()
-        options = Options()
 
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -80,4 +87,13 @@ class Booking(webdriver.Chrome):
 
     def apply_filtrations(self):
         filtration = BookingFiltration(driver=self)
-        filtration.apply_star_rating(3, 4, 5)
+        filtration.apply_star_rating(3)
+    # <div class="d4924c9e74" role="list" data-results-container="1">
+    def report_results(self):
+        hotel_boxes = self.find_element(By.XPATH, '//div[@data-results-container="1"]')
+        report = BookingReport(hotel_boxes)
+        table = PrettyTable(
+            field_names = ["Hotel Name", "Hotel Price", "Hotel Score", "Hotel Location Score"]
+        )
+        table.add_rows(report.pull_deal_box_info())
+        print(table)
