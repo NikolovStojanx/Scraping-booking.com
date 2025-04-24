@@ -1,7 +1,7 @@
 import time
 
 from bot.booking.booking import Booking
-
+from bot.booking.scroller import Scroller
 
 
 with Booking() as bot:
@@ -25,7 +25,12 @@ with Booking() as bot:
 
     # bot.select_adults(adults_count)
     bot.click_search()
+
+
+
     # filter = input('filter results! (asc, dsc, none)')
-    bot.apply_filtrations('none')
-    bot.refresh()
+    bot.apply_filtrations('dsc')
+    # Scrolling logic
+    scroller = Scroller(driver=bot)
+    scroller.load_all_data()
     bot.report_results()

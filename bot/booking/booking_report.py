@@ -20,16 +20,19 @@ class BookingReport:
         collection = []
         location_score = False
         for deal_box in self.deal_boxes:
-            hotel_name = (deal_box.find_element(By.CSS_SELECTOR, "div[data-testid='title'")).get_attribute(
-                'innerHTML').strip()
+            hotel_name = ((deal_box.find_element(By.CSS_SELECTOR, "div[data-testid='title'")).text
+                          .strip())
 
             hotel_price = float(deal_box.find_element(By.CSS_SELECTOR, 'span[data-testid="price-and-discounted-price"]')
                                 .get_attribute('innerHTML')
                                 .strip()
                                 .split(';')[1]
                                 .replace(',', '.'))
-
-            review_element = deal_box.find_element(By.CSS_SELECTOR, "div[data-testid='review-score'] > div")
+            print(hotel_name)
+            try:
+                review_element = deal_box.find_element(By.CSS_SELECTOR, "div[data-testid='review-score'] > div")
+            except Exception as e:
+                print(e)
             review_score = None
             if review_element:
                 try:
@@ -51,4 +54,5 @@ class BookingReport:
             collection.append(
                     [hotel_name, hotel_price, review_score, location_score]
             )
+        print(len(collection))
         return collection
