@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 class BookingFiltration:
-    def __init__(self, driver:WebDriver):
+    def __init__(self, driver: WebDriver):
         self.driver = driver
 
     def apply_star_rating(self, *star_values):
@@ -22,4 +22,16 @@ class BookingFiltration:
 
 
     def sort_price_lowest_first(self):
-        pass
+        filtration_button = self.driver.find_element(By.CSS_SELECTOR, 'button[data-testid="sorters-dropdown-trigger"]')
+        filtration_button.click()
+        lowest_price_button = self.driver.find_element(By.CSS_SELECTOR, 'div[data-testid="sorters-dropdown"] > ul > li > button[data-id="price"]')
+        lowest_price_button.click()
+
+    def sort_highest_first(self):
+        filtration_button = self.driver.find_element(By.CSS_SELECTOR, 'button[data-testid="sorters-dropdown-trigger"]')
+        filtration_button.click()
+        high_to_low_button = self.driver.find_element(By.CSS_SELECTOR,
+                                                       'div[data-testid="sorters-dropdown"] > ul > li > button['
+                                                       'data-id="price_from_high_to_low"]')
+        high_to_low_button.click()
+

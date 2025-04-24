@@ -83,11 +83,19 @@ class Booking(webdriver.Chrome):
         submit_button = self.find_element(By.XPATH,
                                           '//button[@type="submit"]'
                                             )
+        self.wait_for_element(By.XPATH, '//button[@type="submit"]', 7)
         submit_button.click()
 
-    def apply_filtrations(self):
+    def apply_filtrations(self, filter):
         filtration = BookingFiltration(driver=self)
         filtration.apply_star_rating(3)
+        if (filter == 'asc'):
+            filtration.sort_price_lowest_first()
+        elif(filter == 'dsc'):
+            filtration.sort_highest_first()
+
+
+
     # <div class="d4924c9e74" role="list" data-results-container="1">
     def report_results(self):
         hotel_boxes = self.find_element(By.XPATH, '//div[@data-results-container="1"]')
@@ -97,3 +105,8 @@ class Booking(webdriver.Chrome):
         )
         table.add_rows(report.pull_deal_box_info())
         print(table)
+
+    def wait_for_element(self, by, value, timeout=10):
+        WebDriverWait(self, timeout).until(
+            EC.element_to_be_clickable((by, value))
+        )
